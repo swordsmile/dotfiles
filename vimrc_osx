@@ -21,6 +21,8 @@ Plugin 'nvie/vim-flake8'
 
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'mhinz/vim-startify'
+Plugin 'ryanoasis/vim-devicons'
 
 "" Colorthemes
 Plugin 'morhetz/gruvbox'
@@ -94,6 +96,7 @@ set completeopt-=preview
 set complete-=i
 
 " ****** airline ******
+let g:airline_theme="luna"
 set laststatus=2
 " 终端显示 256 色
 set t_Co=256
@@ -103,11 +106,18 @@ endif
 
 let g:airline_powerline_fonts = 1
 
-let g:airline#extensions#tabline#enabled=1
-let g:airline#extensions#tabline#buffer_nr_show=1
+" 打开 tabline 功能，方便查看 Buffer 和切换
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
 
+" 关闭状态显示空白符号计数
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#whitespace#symbol = '!'
+
+let g:airline_left_sep = "\uE0B4"
+let g:airline_right_sep = "\uE0B6"
+
+let g:airline_section_z = airline#section#create(["\uE0A1" . '%{line(".")}' . "\uE0A3" . '%{col(".")}'])
 
 " ****** gruvbox ******
 colorscheme gruvbox
@@ -148,7 +158,7 @@ let NERDTreeIgnore=['\.pyc','\~$','\.swp','__pycache__','\.git$','\.DS_Store']
 " Close vim if the only window left open is a NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 " Automatically open a NERDTree if no files where specified
-autocmd vimenter * if !argc() | NERDTree | endif
+" autocmd vimenter * if !argc() | NERDTree | endif
 
 
 " ****** delimitMate ******
@@ -280,6 +290,10 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+nnoremap <C-N> :bn<CR>
+nnoremap <C-P> :bp<CR>
+nnoremap <C-X> :bd<CR>
+
 " auto add pyhton header --start
 " autocmd BufNewFile *.py 0r ~/.vim/template/python.py
 autocmd BufNewFile *.py ks|call FileName()|'s
@@ -314,5 +328,9 @@ fun! <SID>StripTrailingWhitespaces()
     endfun
 autocmd FileType * autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
 
-
+" Vim可以记录上次打开某一文件时的光标位置，并在下次打开同一文件时将光标移动到该位置。
+augroup resCur
+  autocmd!
+  autocmd BufReadPost * call setpos(".", getpos("'\""))
+augroup END
 
