@@ -48,8 +48,11 @@ Plugin 'dkprice/vim-easygrep'
 
 " Plugin 'vim-syntastic/syntastic'
 
-" provides automatic closing of quotes, parenthesis, brackets, etc.
+" provides automatic closing of quotes, parenthesis, brackets, etc. 输入引号,括号时,自动补全
 Plugin 'Raimondi/delimitMate'
+
+Plugin 'kien/rainbow_parentheses.vim'
+Plugin 'tpope/vim-surround'
 
 " for visually displaying indent levels in Vim
 Plugin 'nathanaelkane/vim-indent-guides'
@@ -75,6 +78,9 @@ let mapleader=","
 set timeoutlen=350
 
 nnoremap <leader>w :%s/\s\+$//<cr>:let @/=''<CR>
+
+" Force saving files that require root permission
+cnoremap w!! w !sudo tee > /dev/null %
 
 
 " ****** YouCompleteMe ******
@@ -121,7 +127,7 @@ let g:airline_section_z = airline#section#create(["\uE0A1" . '%{line(".")}' . "\
 
 " ****** gruvbox ******
 colorscheme gruvbox
-set background=dark
+set background=light
 " 语法高亮
 syntax enable
 " 关键字上色
@@ -148,7 +154,7 @@ nmap <leader>tb :TagbarToggle<CR>
 map <leader>t :NERDTreeToggle<CR>
 map <S-m> <plug>NERDTreeTabsToggle<CR>
 let NERDChristmasTree=0
-let NERDTreeWinSize=40
+let NERDTreeWinSize=30
 let NERDTreeChDirMode=2
 let NERDTreeShowBookmarks=1
 " 是否显示隐藏文件
@@ -176,6 +182,19 @@ let g:indent_guides_guide_size=1
 " ****** swordsmile ******
 " Vim UI
 " autocmd BufWritePost $MYVIMRC source $MYVIMRC
+"set nobomb
+set lines=35 columns=140
+
+set ambiwidth=double
+
+" 光标移动到buffer的顶部和底部时保持5行距离
+set scrolloff=5
+
+" 在状态行显示目前所执行的命令，未完成的指令片段亦会显示出来
+set showcmd
+
+" 自动切换当前目录为当前文件所在的目录
+set autochdir
 
 set fileformats=unix
 set encoding=utf-8
@@ -222,7 +241,7 @@ set cursorcolumn
 
 " 显示特殊符号
 set list
-set listchars=tab:›\ ,trail:•,extends:#,nbsp:.
+" set listchars=tab:›\ ,trail:•,extends:#,nbsp:.
 
 set nowrap
 
