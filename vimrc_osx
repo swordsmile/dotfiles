@@ -26,6 +26,7 @@ Plugin 'ryanoasis/vim-devicons'
 
 "" Colorthemes
 Plugin 'morhetz/gruvbox'
+Plugin 'chriskempson/vim-tomorrow-theme'
 
 Plugin 'vim-scripts/indentpython'
 
@@ -127,7 +128,8 @@ let g:airline_section_z = airline#section#create(["\uE0A1" . '%{line(".")}' . "\
 
 " ****** gruvbox ******
 colorscheme gruvbox
-set background=light
+" colorscheme Tomorrow-Night
+set background=dark
 " 语法高亮
 syntax enable
 " 关键字上色
@@ -167,6 +169,11 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 " autocmd vimenter * if !argc() | NERDTree | endif
 
 
+" ****** NERD commenter ******
+" 让注释符与语句之间留一个空格
+let NERDSpaceDelims=1
+
+
 " ****** delimitMate ******
 let g:delimitMate_expand_cr = 1
 " 随 vim 自启动
@@ -185,7 +192,7 @@ let g:indent_guides_guide_size=1
 "set nobomb
 set lines=35 columns=140
 
-set ambiwidth=double
+" set ambiwidth=double
 
 " 光标移动到buffer的顶部和底部时保持5行距离
 set scrolloff=5
@@ -241,7 +248,7 @@ set cursorcolumn
 
 " 显示特殊符号
 set list
-" set listchars=tab:›\ ,trail:•,extends:#,nbsp:.
+set listchars=tab:›\ ,trail:•,extends:#,nbsp:.
 
 set nowrap
 
