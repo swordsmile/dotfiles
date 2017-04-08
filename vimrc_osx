@@ -189,10 +189,13 @@ let g:indent_guides_guide_size=1
 " ****** swordsmile ******
 " Vim UI
 " autocmd BufWritePost $MYVIMRC source $MYVIMRC
-"set nobomb
-set lines=35 columns=140
+set nobomb
+" set lines=35 columns=140
 
-" set ambiwidth=double
+" if has("gui_running")
+if has("gui_macvim")
+    set ambiwidth=double
+endif
 
 " 光标移动到buffer的顶部和底部时保持5行距离
 set scrolloff=5
@@ -359,4 +362,3 @@ augroup resCur
   autocmd!
   autocmd BufReadPost * call setpos(".", getpos("'\""))
 augroup END
-
