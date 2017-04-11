@@ -11,7 +11,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'majutsushi/tagbar'
-" Plugin 'CodeFalling/fcitx-vim-osx'
+Plugin 'CodeFalling/fcitx-vim-osx'
 
 " async syntax checking plugin for Vim
 " Plugin 'w0rp/ale'
@@ -30,8 +30,8 @@ Plugin 'chriskempson/vim-tomorrow-theme'
 
 Plugin 'vim-scripts/indentpython'
 
-" best auto complete tool I have ever used(jedi, supertab...)
-" Plugin 'Valloric/YouCompleteMe'
+" best auto complete tool I have ever used(jedi, supertab...) 自动补全 (YouCompleteMe)
+Plugin 'Valloric/YouCompleteMe'
 
 " tree explore plugin
 Plugin 'scrooloose/nerdtree'
@@ -48,7 +48,8 @@ Plugin 'easymotion/vim-easymotion'
 Plugin 'othree/eregex.vim'
 Plugin 'dkprice/vim-easygrep'
 
-" Plugin 'vim-syntastic/syntastic'
+" 代码检查 (Syntastic)
+Plugin 'vim-syntastic/syntastic'
 
 " provides automatic closing of quotes, parenthesis, brackets, etc. 输入引号,括号时,自动补全
 Plugin 'Raimondi/delimitMate'
@@ -100,6 +101,24 @@ set completeopt-=preview
 " Vim's autocomplete is excruciatingly slow
 " http://stackoverflow.com/questions/2169645/vims-autocomplete-is-excruciatingly-slow
 set complete-=i
+
+" 设置错误符号
+let g:syntastic_error_symbol='✗'
+" 设置警告符号
+let g:syntastic_warning_symbol='⚠'
+" 是否在打开文件时检查
+let g:syntastic_check_on_open=0
+" 是否在保存文件后检查
+let g:syntastic_check_on_wq=1
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 
 " ****** airline ******
 let g:airline_theme="luna"
@@ -183,6 +202,26 @@ let g:indent_guides_start_level=2
 let g:indent_guides_guide_size=1
 " 快捷键 i 开/关缩进可视化
 :nmap <silent> <Leader>i <Plug>IndentGuidesToggle
+
+
+" ****** easymotion ******
+" 更改快捷键
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+
+" Jump to anywhere you want with minimal keystrokes, with just one key binding.
+" `s{char}{label}`
+nmap s <Plug>(easymotion-overwin-f)
+" or
+" `s{char}{char}{label}`
+" Need one more keystroke, but on average, it may be more comfortable.
+" nmap s <Plug>(easymotion-overwin-f2)
+
+" Turn on case insensitive feature
+let g:EasyMotion_smartcase = 1
+
+" JK motions: Line motions
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
 
 
 " ****** swordsmile ******
@@ -314,7 +353,7 @@ nnoremap <C-P> :bp<CR>
 nnoremap <C-X> :bd<CR>
 
 " auto add pyhton header --start
-" autocmd BufNewFile *.py 0r ~/.vim/template/python.py
+autocmd BufNewFile *.py 0r ~/.vim/template/python.py
 autocmd BufNewFile *.py ks|call FileName()|'s
 autocmd BufNewFile *.py ks|call CreatedTime()|'s
 
@@ -377,3 +416,8 @@ if has("win32")
     source $VIMRUNTIME/delmenu.vim
     source $VIMRUNTIME/menu.vim
 endif
+
+au BufRead,BufNewFile *.nginx set ft=nginx
+au BufRead,BufNewFile */etc/nginx/* set ft=nginx
+au BufRead,BufNewFile */usr/local/nginx/conf/* set ft=nginx
+au BufRead,BufNewFile nginx.conf set ft=nginx
