@@ -10,39 +10,46 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
+" 安装依赖 yum -y install ctags
 Plugin 'majutsushi/tagbar'
-Plugin 'CodeFalling/fcitx-vim-osx'
 
-" async syntax checking plugin for Vim
+" Plugin 'CodeFalling/fcitx-vim-osx'
+" Plugin 'vim-scripts/VimIM'
+
+" async syntax checking plugin for Vim 代码异步检测插件 ( vim8+ )
 " Plugin 'w0rp/ale'
-
-" auto check python use pep8
-Plugin 'nvie/vim-flake8'
 
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+" 可以显示最近使用的文件列表、书签和存储在指定文件夹中的 session
 Plugin 'mhinz/vim-startify'
 Plugin 'ryanoasis/vim-devicons'
 
-"" Colorthemes
+" Colorthemes
 Plugin 'morhetz/gruvbox'
 Plugin 'chriskempson/vim-tomorrow-theme'
+" Plugin 'jnurmine/Zenburn'
 
+" 自动缩进插件 符合 PEP8 标准
 Plugin 'vim-scripts/indentpython'
 
 " best auto complete tool I have ever used(jedi, supertab...) 自动补全 (YouCompleteMe)
+" 一个随键而全的、支持模糊搜索的、高速补全的插件，太棒了！
 Plugin 'Valloric/YouCompleteMe'
 
-" tree explore plugin
+" tree explore plugin 工程文件浏览
 Plugin 'scrooloose/nerdtree'
+" 如果你想用 tab 键，可以利用 vim-nerdtree-tabs 插件实现
 Plugin 'jistr/vim-nerdtree-tabs'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 
-" super search
+" super search 超级搜索
 Plugin 'kien/ctrlp.vim'
 
+" 快速开关注释
 Plugin 'scrooloose/nerdcommenter'
 
+" 快速移动
 Plugin 'easymotion/vim-easymotion'
 
 Plugin 'othree/eregex.vim'
@@ -51,19 +58,37 @@ Plugin 'dkprice/vim-easygrep'
 " 代码检查 (Syntastic)
 Plugin 'vim-syntastic/syntastic'
 
+" auto check python use pep8. PEP8 代码风格检查
+Plugin 'nvie/vim-flake8'
+Plugin 'Vimjas/vim-python-pep8-indent'
+Plugin 'hdima/python-syntax'
+Plugin 'Glench/Vim-Jinja2-Syntax'
+
 " provides automatic closing of quotes, parenthesis, brackets, etc. 输入引号,括号时,自动补全
 Plugin 'Raimondi/delimitMate'
 
+" 括号显示增强
 Plugin 'kien/rainbow_parentheses.vim'
 Plugin 'tpope/vim-surround'
 
-" for visually displaying indent levels in Vim
+" for visually displaying indent levels in Vim 可视化缩进
 Plugin 'nathanaelkane/vim-indent-guides'
 
 " Highlights trailing whitespace in red and provides
 Plugin 'bronson/vim-trailing-whitespace'
 " Plugin 'ShowTrailingWhitespace'
 Plugin 'terryma/vim-multiple-cursors'
+
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
+
+Plugin 'elzr/vim-json'
+Plugin 'pangloss/vim-javascript'
+
+Plugin 'gcmt/wildfire.vim'
+
+Plugin 'Shougo/vimshell.vim'
+
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -76,12 +101,15 @@ filetype plugin on
 " Put your non-Plugin stuff after this line
 
 " **************************************************
-" 映射 <leader> 键到 , 默认是 \
+" 映射 <leader> 键 , 默认是 \ " 定义快捷键的前缀 , 即<Leader>
 let mapleader=","
 " 等待时间,如<leader>键后的输入
 set timeoutlen=350
 
 nnoremap <leader>w :%s/\s\+$//<cr>:let @/=''<CR>
+
+" Python syntax
+let python_highlight_all=1
 
 
 " ****** YouCompleteMe ******
@@ -90,6 +118,12 @@ nnoremap <leader>j :YcmCompleter GoToDefinitionElseDeclaration<CR>
 let g:ycm_key_list_select_completion = ['<TAB>', '<c-n>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<S-TAB>', '<c-p>', '<Up>']
 let g:ycm_auto_trigger = 1
+" 菜单
+" highlight Pmenu ctermfg=2 ctermbg=3 guifg=#005f87 guibg=#EEE8D5
+" 选中项
+" highlight PmenuSel ctermfg=2 ctermbg=3 guifg=#AFD700 guibg=#106900
+" 禁止缓存匹配项，每次都重新生成匹配项
+let g:ycm_cache_omnifunc=0
 " 最小自动触发补全的字符大小设置为 3
 let g:ycm_min_num_of_chars_for_completion = 3
 " 开启语义补全
@@ -120,6 +154,8 @@ let g:syntastic_check_on_wq = 0
 let g:airline_theme="luna"
 set laststatus=2
 " 终端显示 256 色
+" 防止tmux下vim的背景色显示异常
+" Refer: http://sunaku.github.io/vim-256color-bce.html
 set t_Co=256
 if &term =~ '256color'
     set t_ut=
@@ -163,24 +199,34 @@ endif
 
 " ****** Tagbar ******
 let g:tagbar_width=35
+" 启动时自动 focus
 let g:tagbar_autofocus=1
 nmap <leader>tb :TagbarToggle<CR>
+" nmap <F8> :TagbarToggle<CR>
 
 " ****** NERDTree ******
 map <leader>t :NERDTreeToggle<CR>
 map <S-m> <plug>NERDTreeTabsToggle<CR>
+" 设置NERDTree子窗口位置
+let NERDTreeWinPos="right"
 let NERDChristmasTree=0
 let NERDTreeWinSize=30
 let NERDTreeChDirMode=2
 let NERDTreeShowBookmarks=1
 " 是否显示隐藏文件
 let NERDTreeShowHidden=0
+" 删除文件时自动删除文件对应 buffer
+let NERDTreeAutoDeleteBuffer=1
 " 忽略一下文件的显示
 let NERDTreeIgnore=['\.pyc','\~$','\.swp','__pycache__','\.git$','\.DS_Store']
 " Close vim if the only window left open is a NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 " Automatically open a NERDTree if no files where specified
 " autocmd vimenter * if !argc() | NERDTree | endif
+" 是否自动开启nerdtree
+" thank to @ListenerRi, see https://github.com/wklken/k-vim/issues/165
+let g:nerdtree_tabs_open_on_console_startup=0
+let g:nerdtree_tabs_open_on_gui_startup=0
 
 
 " ****** NERD commenter ******
@@ -190,6 +236,8 @@ let NERDSpaceDelims=1
 
 " ****** delimitMate ******
 let g:delimitMate_expand_cr = 1
+
+" ****** 可视化缩进 ******
 " 随 vim 自启动
 let g:indent_guides_enable_on_vim_startup=1
 " 从第二层开始可视化显示缩进
@@ -219,10 +267,24 @@ let g:EasyMotion_smartcase = 1
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 
+" markdown
+let g:vim_markdown_folding_disabled = 1
+
+" 适用于哪些结对符
+let g:wildfire_objects = ["i'", 'i"', "i)", "i]", "i}", "i>", "ip"]
+
+" 快捷键
+map <SPACE> <Plug>(wildfire-fuel)
+vmap <S-SPACE> <Plug>(wildfire-water)
 
 " ****** swordsmile ******
+" 设置 退出vim后，内容显示在终端屏幕, 可以用于查看和复制, 不需要可以去掉
+" 好处：误删什么的，如果以前屏幕打开，可以找回
+set t_ti= t_te=
+
 " Vim UI
-" autocmd BufWritePost $MYVIMRC source $MYVIMRC
+" 让配置变更立即生效
+autocmd BufWritePost $MYVIMRC source $MYVIMRC
 set nobomb
 " if has("gui_running")
 if has("gui_macvim")
@@ -262,10 +324,13 @@ set ignorecase
 " 智能大小写搜索
 set smartcase
 
-" 边输入边搜索
+" 边输入边搜索 开启实时搜索功能
 set incsearch
 " 检索时高亮显示匹配项
 set hlsearch
+
+" 去掉搜索高亮
+noremap <silent><leader>/ :nohls<CR>
 
 " 显示行号
 set number
@@ -274,9 +339,10 @@ set relativenumber number
 set showmatch
 set matchtime=2
 set shortmess=atl
+" 显示光标当前位置
 set ruler
 
-" 高亮当前行
+" 高亮当前行/列
 set cursorline
 set cursorcolumn
 
@@ -284,9 +350,15 @@ set cursorcolumn
 set list
 set listchars=tab:›\ ,trail:•,extends:#,nbsp:.
 
+" 禁止折行
 set nowrap
 
-set mouse=a
+" 鼠标暂不启用, 键盘党....
+set mouse-=a
+" 启用鼠标
+" set mouse=a
+" Hide the mouse cursor while typing
+" set mousehide
 
 set noautoindent
 set cindent
@@ -309,6 +381,7 @@ set backspace=indent,eol,start
 
 autocmd FileType ruby setlocal ts=2 sts=2 sw=2 et
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 et
+autocmd FileType md setlocal ts=2 sts=2 sw=2 et
 autocmd FileType html setlocal ts=2 sts=2 sw=2 et
 autocmd FileType css setlocal ts=2 sts=2 sw=2 et
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -318,6 +391,7 @@ autocmd BufLeave * let b:winview = winsaveview()
 autocmd BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif
 
 autocmd BufNewFile,BufRead *.py set tabstop=4 softtabstop=4 shiftwidth=4 textwidth=79 expandtab autoindent fileformat=unix colorcolumn=80
+" autocmd BufNewFile,BufRead *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
 " autocmd BufNewFile *.py 0r ~/.vim/template/python.py
 
@@ -353,34 +427,34 @@ autocmd BufNewFile *.py 0r ~/.vim/template/python.py
 autocmd BufNewFile *.py ks|call FileName()|'s
 autocmd BufNewFile *.py ks|call CreatedTime()|'s
 
-fun FileName()
+function! FileName()
     if line("$") > 10
         let l = 10
     else
         let l = line("$")
     endif
     exe "1," . l . "g/File Name:.*/s/File Name:.*/File Name: " .expand("%")
-endfun
+endfunction
 
-fun CreatedTime()
+function! CreatedTime()
     if line("$") > 10
         let l = 10
     else
         let l = line("$")
     endif
     exe "1," . l . "g/Created Time:.*/s/Created Time:.*/Created Time: " .strftime("%Y-%m-%d %T")
-endfun
+endfunction
 " auto add python header --end
 
 
 " auto clear whitespace
-fun! <SID>StripTrailingWhitespaces()
+function! <SID>StripTrailingWhitespaces()
     let l = line(".")
     let c = col(".")
     %s/\s\+$//e
     call cursor(l, c)
     endfun
-autocmd FileType * autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
+" autocmd FileType * autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
 
 " Vim可以记录上次打开某一文件时的光标位置，并在下次打开同一文件时将光标移动到该位置。
 augroup resCur
@@ -389,9 +463,13 @@ augroup resCur
 augroup END
 
 if has("gui_running")
+    " 禁止显示菜单和工具条
     set guioptions-=m
     set guioptions-=T
+    " 禁止显示滚动条
     set guioptions-=L
+    set guioptions-=R
+    set guioptions-=l
     set guioptions-=r
     set guioptions-=b
     set lines=35 columns=140
