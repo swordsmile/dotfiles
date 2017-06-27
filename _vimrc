@@ -328,6 +328,8 @@ set smartcase
 set incsearch
 " 检索时高亮显示匹配项
 set hlsearch
+" 设置高亮颜色
+highlight Search ctermbg=grey ctermfg=black
 
 " 去掉搜索高亮
 noremap <silent><leader>/ :nohls<CR>
