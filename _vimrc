@@ -83,11 +83,20 @@ Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 
 Plugin 'elzr/vim-json'
-Plugin 'pangloss/vim-javascript'
 
 Plugin 'gcmt/wildfire.vim'
 
 Plugin 'Shougo/vimshell.vim'
+
+" html
+Plugin 'mattn/emmet-vim'
+
+" css
+Plugin 'hail2u/vim-css3-syntax'
+Plugin 'groenewege/vim-less'
+
+" javascript
+Plugin 'pangloss/vim-javascript'
 
 
 " All of your Plugins must be added before the following line
@@ -135,6 +144,12 @@ set completeopt-=preview
 " Vim's autocomplete is excruciatingly slow
 " http://stackoverflow.com/questions/2169645/vims-autocomplete-is-excruciatingly-slow
 set complete-=i
+" CSS
+let g:ycm_semantic_triggers = {
+    \   'css': [ 're!^\s{4}', 're!:\s+'],
+    \   'html': [ '</' ],
+    \ }
+
 
 " 设置错误符号
 let g:syntastic_error_symbol='✗'
@@ -276,6 +291,13 @@ let g:wildfire_objects = ["i'", 'i"', "i)", "i]", "i}", "i>", "ip"]
 " 快捷键
 map <SPACE> <Plug>(wildfire-fuel)
 vmap <S-SPACE> <Plug>(wildfire-water)
+
+" vim-javascript
+let javascript_enable_domhtmlcss = 1
+
+" emmet-vim
+autocmd filetype *html* imap <c-_> <c-y>/
+autocmd filetype *html* map <c-_> <c-y>/
 
 " ****** swordsmile ******
 " 设置 退出vim后，内容显示在终端屏幕, 可以用于查看和复制, 不需要可以去掉
@@ -428,6 +450,7 @@ nnoremap <C-X> :bd<CR>
 autocmd BufNewFile *.py 0r ~/.vim/template/python.py
 autocmd BufNewFile *.py ks|call FileName()|'s
 autocmd BufNewFile *.py ks|call CreatedTime()|'s
+autocmd BufNewFile * normal G
 
 function! FileName()
     if line("$") > 10
