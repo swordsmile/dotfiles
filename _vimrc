@@ -33,6 +33,9 @@ Plugin 'chriskempson/vim-tomorrow-theme'
 " 自动缩进插件 符合 PEP8 标准
 Plugin 'vim-scripts/indentpython'
 
+" python-mode
+Plugin 'python-mode/python-mode'
+
 " best auto complete tool I have ever used(jedi, supertab...) 自动补全 (YouCompleteMe)
 " 一个随键而全的、支持模糊搜索的、高速补全的插件，太棒了！
 Plugin 'Valloric/YouCompleteMe'
@@ -110,12 +113,72 @@ filetype plugin on
 " Put your non-Plugin stuff after this line
 
 " **************************************************
+" keyboard
 " 映射 <leader> 键 , 默认是 \ " 定义快捷键的前缀 , 即<Leader>
 let mapleader=","
 " 等待时间,如<leader>键后的输入
 set timeoutlen=350
 
 nnoremap <leader>w :%s/\s\+$//<cr>:let @/=''<CR>
+
+" Map ; to : and save a million keystrokes 用于快速进入命令行
+nnoremap ; :
+
+" insert mode shortcut
+inoremap <A-h> <Left>
+inoremap <A-j> <Down>
+inoremap <A-k> <Up>
+inoremap <A-l> <Right>
+inoremap <A-d> <DELETE>
+" 在光标下方，上方插入新行
+inoremap <A-o> <Esc>o
+inoremap <A-O> <Esc>O
+" 删除当前行
+inoremap <A-d> <C-o>dd
+" 删除当前行并重写
+inoremap <A-r> <Esc>cc
+
+" F1 - F6 设置
+inoremap <F1> <Esc>
+
+" F2 行号开关，用于鼠标复制代码用
+" 为方便复制，用<F2>开启/关闭行号显示:
+function! HideNumber()
+  if(&relativenumber == &number)
+    set relativenumber! number!
+  elseif(&number)
+    set number!
+  else
+    set relativenumber!
+  endif
+  set number?
+endfunc
+nnoremap <F2> :call HideNumber()<CR>
+
+" F3 显示可打印字符开关
+nnoremap <F3> :set list! list?<CR>
+
+" F4 换行开关
+nnoremap <F4> :set wrap! wrap?<CR>
+
+" when in insert mode, press <F5> to go to
+" paste mode, where you can paste mass data
+" that won't be autoindented
+" set pastetoggle=<F5>
+nnoremap <F5> :set invpaste paste?<CR>
+" toggle paste
+set pastetoggle=<F5>
+" nnoremap <leader>p :set invpaste paste?<CR>
+" toggle paste
+" set pastetoggle=<leader>p
+
+" disbale paste mode when leaving insert mode
+au InsertLeave * set nopaste
+
+" Toggles between the active and last active tab "
+" The first tab is always 1 "
+let g:last_active_tab = 1
+
 
 " Python syntax
 let python_highlight_all=1
@@ -299,7 +362,11 @@ let javascript_enable_domhtmlcss = 1
 autocmd filetype *html* imap <c-_> <c-y>/
 autocmd filetype *html* map <c-_> <c-y>/
 
+" python-mode
+" let g:pymode_python = 'python3'
+
 " ****** swordsmile ******
+
 " 设置 退出vim后，内容显示在终端屏幕, 可以用于查看和复制, 不需要可以去掉
 " 好处：误删什么的，如果以前屏幕打开，可以找回
 set t_ti= t_te=
@@ -315,7 +382,7 @@ if has("gui_macvim")
 endif
 
 " 光标移动到buffer的顶部和底部时保持5行距离
-set scrolloff=3
+set scrolloff=5
 
 " 在状态行显示目前所执行的命令，未完成的指令片段亦会显示出来
 set showcmd
@@ -410,6 +477,7 @@ autocmd FileType html setlocal ts=2 sts=2 sw=2 et
 autocmd FileType css setlocal ts=2 sts=2 sw=2 et
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 autocmd FileType php set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+autocmd FileType python set tabstop=4 softtabstop=4 shiftwidth=4 textwidth=79 expandtab autoindent fileformat=unix colorcolumn=80
 
 autocmd BufLeave * let b:winview = winsaveview()
 autocmd BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif
@@ -422,10 +490,6 @@ autocmd BufNewFile,BufRead *.py set tabstop=4 softtabstop=4 shiftwidth=4 textwid
 
 " ignore compiled files
 set wildignore=*.o,*~,*.pyc
-
-nnoremap <leader>p :set invpaste paste?<CR>
-" toggle paste
-set pastetoggle=<leader>p
 
 nnoremap <space> za
 
@@ -447,28 +511,57 @@ nnoremap <C-P> :bp<CR>
 nnoremap <C-X> :bd<CR>
 
 " auto add pyhton header --start
-autocmd BufNewFile *.py 0r ~/.vim/template/python.py
-autocmd BufNewFile *.py ks|call FileName()|'s
-autocmd BufNewFile *.py ks|call CreatedTime()|'s
-autocmd BufNewFile * normal G
+" autocmd BufNewFile *.py 0r ~/.vim/template/python.py
+" autocmd BufNewFile *.py ks|call FileName()|'s
+" autocmd BufNewFile *.py ks|call CreatedTime()|'s
+" autocmd BufNewFile * normal G
 
-function! FileName()
-    if line("$") > 10
-        let l = 10
-    else
-        let l = line("$")
+" 定义函数 AutoSetFileHead，自动插入文件头
+autocmd BufNewFile *.sh,*.py exec ":call AutoSetFileHead()"
+autocmd FileWritePre,BufWritePre *.sh,*.py ks|call DateInsert()|'s
+
+function! AutoSetFileHead()
+    " 如果文件类型为.sh文件
+    if &filetype == 'sh'
+        call setline(1, "\#!/bin/bash")
+        call append(line("."), "\####################################")
+        call append(line(".")+1, "\# File Name: ".expand("%:t"))
+        call append(line(".")+2, "\# Author: swordsmile")
+        call append(line(".")+3, "\# Mail: 1627989802@qq.com")
+        call append(line(".")+4, "\# Created Time: ".strftime("%Y-%m-%d %T"))
+        call append(line(".")+5, "\# Last Modified: ".strftime("%Y-%m-%d %T"))
+        call append(line(".")+6, "\####################################")
     endif
-    exe "1," . l . "g/File Name:.*/s/File Name:.*/File Name: " .expand("%")
+
+    "如果文件类型为python
+    if &filetype == 'python'
+        call setline(1, "\#!/usr/bin/env python")
+        call append(line("."), "\# -*- coding: utf-8 -*-")
+        call append(line(".")+1, "\####################################")
+        call append(line(".")+2, "\# File Name: ".expand("%:t"))
+        call append(line(".")+3, "\# Author: swordsmile")
+        call append(line(".")+4, "\# Mail: 1627989802@qq.com")
+        call append(line(".")+5, "\# Created Time: ".strftime("%Y-%m-%d %T"))
+        call append(line(".")+6, "\# Last Modified: ".strftime("%Y-%m-%d %T"))
+        call append(line(".")+7, "\####################################")
+    endif
+
+    normal G
+    normal o
+    normal o
+    normal o
+    autocmd BufNewFile * normal G
+endfunc
+
+function! DateInsert()
+    call cursor(8,1)
+    if search('Last Modified') != 0
+        let line = line('.')
+        call setline(line,"\# Last Modified: " . strftime("%Y-%m-%d %T"))
+    endif
 endfunction
 
-function! CreatedTime()
-    if line("$") > 10
-        let l = 10
-    else
-        let l = line("$")
-    endif
-    exe "1," . l . "g/Created Time:.*/s/Created Time:.*/Created Time: " .strftime("%Y-%m-%d %T")
-endfunction
+
 " auto add python header --end
 
 
