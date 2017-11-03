@@ -176,12 +176,12 @@ nnoremap <F4> :set wrap! wrap?<CR>
 " paste mode, where you can paste mass data
 " that won't be autoindented
 " set pastetoggle=<F5>
-nnoremap <F5> :set invpaste paste?<CR>
+" nnoremap <F5> :set invpaste paste?<CR>
 " toggle paste
-set pastetoggle=<F5>
-" nnoremap <leader>p :set invpaste paste?<CR>
+" set pastetoggle=<F5>
+nnoremap <leader>p :set invpaste paste?<CR>
 " toggle paste
-" set pastetoggle=<leader>p
+set pastetoggle=<leader>p
 
 " disbale paste mode when leaving insert mode
 au InsertLeave * set nopaste
