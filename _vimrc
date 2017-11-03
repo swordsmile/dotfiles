@@ -16,8 +16,12 @@ Plugin 'majutsushi/tagbar'
 " Plugin 'CodeFalling/fcitx-vim-osx'
 " Plugin 'vim-scripts/VimIM'
 
+Plugin 'sheerun/vim-polyglot'
 " async syntax checking plugin for Vim 代码异步检测插件 ( vim8+ )
-" Plugin 'w0rp/ale'
+Plugin 'w0rp/ale'
+
+" 代码检查 (Syntastic)
+" Plugin 'vim-syntastic/syntastic'
 
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
@@ -47,6 +51,7 @@ Plugin 'jistr/vim-nerdtree-tabs'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 
 " super search 超级搜索
+Plugin 'rking/ag.vim'
 Plugin 'kien/ctrlp.vim'
 
 " 快速开关注释
@@ -57,9 +62,6 @@ Plugin 'easymotion/vim-easymotion'
 
 Plugin 'othree/eregex.vim'
 Plugin 'dkprice/vim-easygrep'
-
-" 代码检查 (Syntastic)
-Plugin 'vim-syntastic/syntastic'
 
 " auto check python use pep8. PEP8 代码风格检查
 Plugin 'nvie/vim-flake8'
@@ -84,6 +86,7 @@ Plugin 'terryma/vim-multiple-cursors'
 
 Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
+Plugin 'suan/vim-instant-markdown'
 
 Plugin 'elzr/vim-json'
 
@@ -93,13 +96,21 @@ Plugin 'Shougo/vimshell.vim'
 
 " html
 Plugin 'mattn/emmet-vim'
+Plugin 'othree/html5.vim'
 
 " css
 Plugin 'hail2u/vim-css3-syntax'
 Plugin 'groenewege/vim-less'
+Plugin 'ap/vim-css-color'
 
 " javascript
 Plugin 'pangloss/vim-javascript'
+
+" -----------------------------------------------
+" git
+" -----------------------------------------------
+Plugin 'airblade/vim-gitgutter'
+Plugin 'tpope/vim-fugitive'
 
 
 " All of your Plugins must be added before the following line
@@ -182,6 +193,14 @@ let g:last_active_tab = 1
 
 " Python syntax
 let python_highlight_all=1
+
+" ale
+let g:ale_javascript_eslint_use_global = 1
+let g:ale_fixers = {
+\   'javascript': ['eslint'],
+\}
+let g:ale_fix_on_save = 1
+let g:ale_completion_enabled = 1
 
 
 " ****** YouCompleteMe ******
@@ -305,11 +324,31 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 " thank to @ListenerRi, see https://github.com/wklken/k-vim/issues/165
 let g:nerdtree_tabs_open_on_console_startup=0
 let g:nerdtree_tabs_open_on_gui_startup=0
-
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ 'Ignored'   : '☒',
+    \ "Unknown"   : "?"
+    \ }
 
 " ****** NERD commenter ******
 " 让注释符与语句之间留一个空格
-let NERDSpaceDelims=1
+let g:NERDSpaceDelims = 1
+let g:NERDDefaultAlign = 'left'
+let g:NERDCustomDelimiters = {
+			\ 'javascript': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
+			\ 'less': { 'left': '/*', 'right': '*/' }
+		\ }
+
+let g:NERDAltDelims_javascript = 1
+let g:NERDDefaultNesting = 0
+
 
 
 " ****** delimitMate ******
@@ -347,6 +386,8 @@ map <Leader>k <Plug>(easymotion-k)
 
 " markdown
 let g:vim_markdown_folding_disabled = 1
+let g:instant_markdown_slow = 1
+let g:instant_markdown_autostart = 0
 
 " 适用于哪些结对符
 let g:wildfire_objects = ["i'", 'i"', "i)", "i]", "i}", "i>", "ip"]
@@ -364,6 +405,8 @@ autocmd filetype *html* map <c-_> <c-y>/
 
 " python-mode
 " let g:pymode_python = 'python3'
+
+" javascript
 
 " ****** swordsmile ******
 
