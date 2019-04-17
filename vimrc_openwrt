@@ -1,0 +1,250 @@
+
+" **************************************************
+set nocompatible              " be iMproved, required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+filetype plugin on
+"
+" **************************************************
+" 映射 <leader> 键 , 默认是 \ " 定义快捷键的前缀 , 即<Leader>
+let mapleader=","
+" 等待时间,如<leader>键后的输入
+set timeoutlen=350
+
+nnoremap <leader>w :%s/\s\+$//<cr>:let @/=''<CR>
+
+
+set t_Co=256
+if &term =~ '256color'
+    set t_ut=
+endif
+
+colorscheme desert
+" colorscheme Tomorrow-Night
+set background=dark
+" 语法高亮
+syntax enable
+" 关键字上色
+syntax on
+
+" ****** swordsmile ******
+" 设置 退出vim后，内容显示在终端屏幕, 可以用于查看和复制, 不需要可以去掉
+" 好处：误删什么的，如果以前屏幕打开，可以找回
+set t_ti= t_te=
+
+" Vim UI
+" 让配置变更立即生效
+autocmd BufWritePost $MYVIMRC source $MYVIMRC
+set nobomb
+" if has("gui_running")
+if has("gui_macvim")
+    set ambiwidth=double
+    set lines=35 columns=140
+endif
+
+" 光标移动到buffer的顶部和底部时保持5行距离
+set scrolloff=3
+
+" 在状态行显示目前所执行的命令，未完成的指令片段亦会显示出来
+set showcmd
+
+" 自动切换当前目录为当前文件所在的目录
+set autochdir
+
+" set fileformats=unix
+set encoding=utf-8
+set termencoding=utf-8
+" 新建文件使用的编码
+set fileencoding=utf-8
+set fileencodings=utf-8,gb2312,gbk,gb18030,ucs-bom,latin-1
+
+" set autoread
+" 允许不保存切换 buffer
+set hidden
+
+" 显示当前 mode
+set showmode
+
+set nobackup
+set noswapfile
+set nowritebackup
+
+" 搜索忽略大小写
+set ignorecase
+" 智能大小写搜索
+set smartcase
+
+" 边输入边搜索 开启实时搜索功能
+set incsearch
+" 检索时高亮显示匹配项
+set hlsearch
+" 设置高亮颜色
+highlight Search ctermbg=grey ctermfg=black
+
+" 去掉搜索高亮
+noremap <silent><leader>/ :nohls<CR>
+
+" 显示行号
+set number
+set relativenumber number
+" 短暂回显匹配的括号
+set showmatch
+set matchtime=2
+set shortmess=atl
+" 显示光标当前位置
+set ruler
+
+" 高亮当前行/列
+set cursorline
+set cursorcolumn
+
+" 显示特殊符号
+set list
+set listchars=tab:›\ ,trail:•,extends:#,nbsp:.
+
+" 禁止折行
+set nowrap
+
+" 鼠标暂不启用, 键盘党....
+set mouse-=a
+" 启用鼠标
+" set mouse=a
+" Hide the mouse cursor while typing
+" set mousehide
+
+set noautoindent
+set cindent
+set smartindent
+
+" 转化 tab 为空格
+" set expandtab
+" tab 缩进为 8 个空格
+" set tabstop=8
+" 自动缩进空格数
+" set shiftwidth=8
+" 退格删除空格数
+" set softtabstop=8
+set smarttab
+" set foldmethod=indent
+
+set whichwrap=b,s,<,>,[,],h,l
+
+set backspace=indent,eol,start
+
+autocmd FileType ruby setlocal ts=2 sts=2 sw=2 et
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 et
+autocmd FileType md setlocal ts=2 sts=2 sw=2 et
+autocmd FileType html setlocal ts=2 sts=2 sw=2 et
+autocmd FileType css setlocal ts=2 sts=2 sw=2 et
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+autocmd FileType php set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+
+autocmd BufLeave * let b:winview = winsaveview()
+autocmd BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif
+
+autocmd BufNewFile,BufRead *.py set tabstop=4 softtabstop=4 shiftwidth=4 textwidth=79 expandtab autoindent fileformat=unix colorcolumn=80
+" autocmd BufNewFile,BufRead *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+
+" autocmd BufNewFile *.py 0r ~/.vim/template/python.py
+
+
+" ignore compiled files
+set wildignore=*.o,*~,*.pyc
+
+nnoremap <leader>p :set invpaste paste?<CR>
+" toggle paste
+set pastetoggle=<leader>p
+
+nnoremap <space> za
+
+
+" Ctrl-j 切换到下方的分割窗口 - Ctrl-k 切换到上方的分割窗口 - Ctrl-l
+" 切换到右侧的分割窗口 - Ctrl-h 切换到左侧的分割窗口
+"split navigations
+" 新分割窗口在下边
+set splitbelow
+" 新分割窗口在右边
+set splitright
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+nnoremap <C-N> :bn<CR>
+nnoremap <C-P> :bp<CR>
+nnoremap <C-X> :bd<CR>
+
+" auto add pyhton header --start
+autocmd BufNewFile *.py 0r ~/.vim/template/python.py
+autocmd BufNewFile *.py ks|call FileName()|'s
+autocmd BufNewFile *.py ks|call CreatedTime()|'s
+autocmd BufNewFile * normal G
+
+function! FileName()
+    if line("$") > 10
+        let l = 10
+    else
+        let l = line("$")
+    endif
+    exe "1," . l . "g/File Name:.*/s/File Name:.*/File Name: " .expand("%")
+endfunction
+
+function! CreatedTime()
+    if line("$") > 10
+        let l = 10
+    else
+        let l = line("$")
+    endif
+    exe "1," . l . "g/Created Time:.*/s/Created Time:.*/Created Time: " .strftime("%Y-%m-%d %T")
+endfunction
+" auto add python header --end
+
+
+" auto clear whitespace
+function! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+    endfun
+" autocmd FileType * autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
+
+" Vim可以记录上次打开某一文件时的光标位置，并在下次打开同一文件时将光标移动到该位置。
+augroup resCur
+  autocmd!
+  autocmd BufReadPost * call setpos(".", getpos("'\""))
+augroup END
+
+if has("gui_running")
+    " 禁止显示菜单和工具条
+    set guioptions-=m
+    set guioptions-=T
+    " 禁止显示滚动条
+    set guioptions-=L
+    set guioptions-=R
+    set guioptions-=l
+    set guioptions-=r
+    set guioptions-=b
+    set lines=35 columns=140
+    " 使用内置 tab 样式而不是 gui
+    set guioptions-=e
+endif
+
+if has("win32")
+"    在 _vimrc 文件里的中文设置后加上下列命令,一定要加到最后
+    set langmenu=zh_CN
+    let $LANG = 'zh_CN.UTF-8'
+    language messages zh_CN.utf-8
+    set guifont=DejaVuSansMono_NF:h10:cANSI
+    set gfw=Microsoft_YaHei_Mono:h10.5:cGB2312
+    set clipboard+=unnamed
+    set winaltkeys=no
+"   set ambiwidth=double
+    source $VIMRUNTIME/delmenu.vim
+    source $VIMRUNTIME/menu.vim
+endif
+
+au BufRead,BufNewFile *.nginx set ft=nginx
+au BufRead,BufNewFile */etc/nginx/* set ft=nginx
+au BufRead,BufNewFile */usr/local/nginx/conf/* set ft=nginx
+au BufRead,BufNewFile nginx.conf set ft=nginx
