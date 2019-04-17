@@ -115,6 +115,24 @@ alias pc4="/usr/bin/proxychains4"
 # if [[ -z $STY ]]; then
     # screen -x arch || screen -U -D -R arch
 # fi
+# if [[ -z $TMUX ]]; then
+#     tmux attach-session -t archlinux || tmux new-session -s archlinux
+# fi
+
+TS="tmux_name"
+TS_TEST=$(tmux list-sessions | grep "$TS")
+
+create_tmux() {
+    tmux new-session -s $TS -n home -d
+    tmux new-window -n vim -t $TS
+    tmux new-window -n htop -t $TS
+    tmux select-window -t home
+}
+
+if [[ -z $TS_TEST ]]; then
+    create_tmux
+fi
+
 if [[ -z $TMUX ]]; then
-    tmux attach-session -t archlinux || tmux new-session -s archlinux
+    tmux attach-session -t $TS
 fi
