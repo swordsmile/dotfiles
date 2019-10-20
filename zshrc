@@ -23,6 +23,8 @@ fi
 
 DISABLE_MAGIC_FUNCTIONS="true"
 
+setopt no_nomatch
+
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
