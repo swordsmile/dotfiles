@@ -71,7 +71,11 @@ setopt no_nomatch
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting)
+plugins=(
+    git
+    zsh-syntax-highlighting
+    zsh-autosuggestions
+)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -122,6 +126,12 @@ alias pc4="/usr/bin/proxychains4"
 # if [[ -z $TMUX ]]; then
 #     tmux attach-session -t archlinux || tmux new-session -s archlinux
 # fi
+
+# zsh-histdb
+# git clone https://github.com/larkery/zsh-histdb $HOME/.oh-my-zsh/custom/plugins/zsh-histdb
+source $HOME/.oh-my-zsh/custom/plugins/zsh-histdb/sqlite-history.zsh
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd histdb-update-outcome
 
 TS="tmux_name"
 TS_TEST=$(tmux list-sessions | grep "$TS")
