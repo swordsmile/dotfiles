@@ -71,11 +71,7 @@ setopt no_nomatch
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(
-    git
-    zsh-syntax-highlighting
-    zsh-autosuggestions
-)
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions k)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -119,6 +115,24 @@ export TERM='xterm-256color'
 
 alias vi='vim'
 alias pc4="/usr/bin/proxychains4"
+alias lsoft="lsof -i -nP -s TCP:ESTABLISHED"
+
+alias ssh-caocz="ssh -p 29840 root@144.34.244.60"
+alias ssh-wangqn="ssh -p 23223 root@47.107.87.87"
+alias ssh-ali="ssh -p 23223 root@149.129.122.168"
+alias ssh-pve05="ssh root@192.168.85.5"
+
+zsh-histdb() {
+	# zsh-histdb
+	# git clone https://github.com/larkery/zsh-histdb $HOME/.oh-my-zsh/custom/plugins/zsh-histdb
+	source $HOME/.oh-my-zsh/custom/plugins/zsh-histdb/sqlite-history.zsh
+	autoload -Uz add-zsh-hook
+	add-zsh-hook precmd histdb-update-outcome
+}
+
+if [[ -x /usr/bin/column ]]; then
+	# zsh-histdb
+fi
 
 # if [[ -z $STY ]]; then
     # screen -x arch || screen -U -D -R arch
@@ -127,20 +141,21 @@ alias pc4="/usr/bin/proxychains4"
 #     tmux attach-session -t archlinux || tmux new-session -s archlinux
 # fi
 
-# zsh-histdb
-# git clone https://github.com/larkery/zsh-histdb $HOME/.oh-my-zsh/custom/plugins/zsh-histdb
-source $HOME/.oh-my-zsh/custom/plugins/zsh-histdb/sqlite-history.zsh
-autoload -Uz add-zsh-hook
-add-zsh-hook precmd histdb-update-outcome
-
-TS="tmux_name"
+TS=$(uname -n)
 TS_TEST=$(tmux list-sessions | grep "$TS")
 
 create_tmux() {
-    tmux new-session -s $TS -n home -d
-    tmux new-window -n vim -t $TS
-    tmux new-window -n htop -t $TS
-    tmux select-window -t home
+    tmux new-session -s $TS -n pve05 -d
+    tmux new-window -n d1 -t $TS
+    tmux new-window -n d2 -t $TS
+    tmux new-window -n hkgcp -t $TS
+    tmux new-window -n 15 -t $TS
+    tmux new-window -n 19 -t $TS
+    tmux new-window -n logread -t $TS
+    tmux new-window -n pve86 -t $TS
+    tmux new-window -n 100 -t $TS
+    tmux new-window -n alpine -t $TS
+    tmux select-window -t pve05
 }
 
 if [[ -z $TS_TEST ]]; then
@@ -148,5 +163,5 @@ if [[ -z $TS_TEST ]]; then
 fi
 
 if [[ -z $TMUX ]]; then
-    tmux attach-session -t $TS
+    tmux attach-session -t $TS -d
 fi
